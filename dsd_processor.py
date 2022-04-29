@@ -9,7 +9,7 @@ path = "C://Users//j.klein//PycharmProjects//my_sanitizer//Alle HTML + dsd en xm
 
 # to store files in a list
 listoffolders = []
-counter = 0
+counterDSD1 = 0
 counterDSD2 = 0
 
 # dirs=directories
@@ -32,14 +32,14 @@ combined_dict_list = []
 
 for counterDSD2 in range(236):
     counterDSD2 = counterDSD2 + 1
-    file_existsDSD = exists(path + '//' + listoffolders[counter] + '//' + 'DS_datasource1.dsd')
+    file_existsDSD = exists(path + '//' + listoffolders[counterDSD1] + '//' + 'DS_datasource1.dsd')
     print("xxxxxxxxxxx")
     print(counterDSD2)
     print("xxxxxxxxxxx")
 
     if file_existsDSD is True:
 
-        doc = etree.parse(path + '//' + listoffolders[counter] + '//' + 'DS_datasource1.dsd')  # In dezelfde directory als de .py zetten
+        doc = etree.parse(path + '//' + listoffolders[counterDSD1] + '//' + 'DS_datasource1.dsd')  # In dezelfde directory als de .py zetten
         root = doc.getroot()
 
         #for elem in root.findall("./binding/dataobject"):
@@ -51,17 +51,17 @@ for counterDSD2 in range(236):
                             randomdictnaam = {}
                             randomdictnaam["objectid"] = elem.attrib["id"]
                             randomdictnaam["PointRefPointName"] = list(elem)[x].text
-                            randomdictnaam["Display"] = listoffolders[counter]
+                            randomdictnaam["Display"] = listoffolders[counterDSD1]
                             print(randomdictnaam)
                             combined_dict_list.append(randomdictnaam)
                             #print(counterDSD2)
-                            #print(counter)
-            counter = counter + 1
+                            #print(counterDSD1)
+            counterDSD1 = counterDSD1 + 1
     else:
         #print("XXXXXXXXXXXXXXXXXXX")
-        counter = counter + 1
+        counterDSD1 = counterDSD1 + 1
         print("yyyyyyyyyyyyy")
-        print(counter)
+        print(counterDSD1)
         print("yyyyyyyyyyyyy")
 print(combined_dict_list)
 with open("dsd.txt", 'w') as f:

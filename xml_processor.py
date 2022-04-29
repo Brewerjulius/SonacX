@@ -5,12 +5,12 @@ from os.path import exists
 #coding: utf-8
 
 # This is the default path
-path = r"X://OneDrive//PycharmProjects//SonacX//Alle HTML + dsd en xml files"
+path = r"C://Users//j.klein//PycharmProjects//my_sanitizer//Alle HTML + dsd en xml files"
 
 # to store files in a list
 
 listoffolders = []
-counter = 0
+counterXML1 = 0
 counterXLM2 = 0
 combined_dict_list = []
 
@@ -28,9 +28,9 @@ length = len(listoffolders)
 #////////////////////////////////////////////////////////////////////////////////////////////////
 
 for counterXLM2 in range(236):
-    file_existsXLM = exists(path + '//' + listoffolders[counter] + '//' + 'bindings.xml')
+    file_existsXLM = exists(path + '//' + listoffolders[counterXML1] + '//' + 'bindings.xml')
     if file_existsXLM is True:
-        doc = etree.parse(path + '//' + listoffolders[counter] + '//' + 'bindings.xml') #In dezelfde directory als de .py zetten
+        doc = etree.parse(path + '//' + listoffolders[counterXML1] + '//' + 'bindings.xml') #In dezelfde directory als de .py zetten
         root = doc.getroot()
 
         for elem in root.findall("./binding"):
@@ -38,15 +38,15 @@ for counterXLM2 in range(236):
                 attributes = elem.attrib
                 child = list(elem)[0].attrib
                 attributes["objectid"] = child["objectid"]
-                attributes["Display"] = listoffolders[counter]
+                attributes["Display"] = listoffolders[counterXML1]
                 #print(attributes)
                 combined_dict_list.append(attributes)
-        counter = counter + 1
-        #print(counter)
+        counterXML1 = counterXML1 + 1
+        #print(counterXML1)
 
     else:
         #print("XXXXXXXXXXXXXXXXXXX")
-        counter = counter + 1
+        counterXML1 = counterXML1 + 1
 
 with open(r"xmller.txt", 'w', encoding="utf-8") as f:
     for x in range(len(combined_dict_list)):

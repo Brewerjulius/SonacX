@@ -8,7 +8,8 @@ from os.path import exists
 import xml.etree.ElementTree as etree
 
 # This is my default path
-path = "C://Users//j.klein//PycharmProjects//my_sanitizer"
+path = "C://Users//Julius//PycharmProjects//SonacX"
+path2 = "C://Users//Julius//PycharmProjects//SonacX//Alle HTML + dsd en xml files"
 
 # to store files in a list
 HTML_Name_List = []
@@ -42,7 +43,7 @@ combined_dict_list = []
 XML_Object_ID = []
 # dirs=directories
 
-for (root, dirs, file) in os.walk(path):
+for (root, dirs, file) in os.walk(path2):
     for f in dirs:
          listoffolders.append(f)
 
@@ -99,9 +100,9 @@ for x in range(Length_HTML_List):
 
 
 
-            file_existsXLM = exists(path + '//' + listoffolders[Length_HTML_List] + '//' + 'bindings.xml')
+            file_existsXLM = exists(path2 + '//' + listoffolders[Length_HTML_List] + '//' + 'bindings.xml')
             if file_existsXLM is True:
-                doc = etree.parse(path + '//' + listoffolders[
+                doc = etree.parse(path2 + '//' + listoffolders[
                     counterXML1] + '//' + 'bindings.xml')  # In dezelfde directory als de .py zetten
                 root = doc.getroot()
 
@@ -112,10 +113,21 @@ for x in range(Length_HTML_List):
                         attributes["objectid"] = child["objectid"]
                         attributes["Display"] = listoffolders[counterXML1]
                         #print(attributes)
-                    if child["objectid"] is Result_HDX_ID:
-                        XML_Object_ID = elem.attrib["ID"]
-                    else:
-                        XML_Object_ID = None
+
+
+                        if Result_HDX_ID is not None:
+                            #print(Result_HDX_ID[0])
+                            #print("xxxxxxxxxxxxvvvvvvvv")
+                            #print(attributes["ID"])
+                            if attributes["ID"] is Result_HDX_ID[0]:
+
+                                XML_Object_ID = attributes["objectid"]
+                                #print(elem.attrib["ID"])
+                                #print(elem)
+
+                        else:
+                            print(XML_Object_ID)
+                            XML_Object_ID = 'Test123'
 
             bigdict = {
                 "ObjectID": y,

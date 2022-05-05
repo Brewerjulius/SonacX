@@ -4,6 +4,9 @@ import os
 import re
 import csv
 
+from os.path import exists
+import xml.etree.ElementTree as etree
+
 # This is my default path
 path = "C://Users//j.klein//PycharmProjects//my_sanitizer"
 
@@ -29,10 +32,22 @@ for (root, dirs, file) in os.walk(path):
             HTML_Name_List.append(f)
 
 
-length = len(HTML_Name_List)
+Length_HTML_List = len(HTML_Name_List)
+
+listoffolders = []
+counterXML1 = 0
+counterXLM2 = 0
+combined_dict_list = []
+
+XML_Object_ID = []
+# dirs=directories
+
+for (root, dirs, file) in os.walk(path):
+    for f in dirs:
+         listoffolders.append(f)
 
 
-for x in range(length):
+for x in range(Length_HTML_List):
     html = open(path + "//Alle HTML + dsd en xml files//" + HTML_Name_List[x], 'r', encoding="latin-1").read()
     stripped = re.sub(r"\s+", " ", html)
 
@@ -82,6 +97,26 @@ for x in range(length):
             if len(Result_Faceplate_Final) < 1:
                 Result_Faceplate1 = None
 
+
+
+            file_existsXLM = exists(path + '//' + listoffolders[Length_HTML_List] + '//' + 'bindings.xml')
+            if file_existsXLM is True:
+                doc = etree.parse(path + '//' + listoffolders[
+                    counterXML1] + '//' + 'bindings.xml')  # In dezelfde directory als de .py zetten
+                root = doc.getroot()
+
+                for elem in root.findall("./binding"):
+                    if len(list(elem)) > 0 and elem.attrib["ID"] != "pageparam":
+                        attributes = elem.attrib
+                        child = list(elem)[0].attrib
+                        attributes["objectid"] = child["objectid"]
+                        attributes["Display"] = listoffolders[counterXML1]
+                        #print(attributes)
+                    if child["objectid"] is Result_HDX_ID:
+                        XML_Object_ID = elem.attrib["ID"]
+                    else:
+                        XML_Object_ID = None
+
             bigdict = {
                 "ObjectID": y,
                 "displayID": x+1,
@@ -89,6 +124,7 @@ for x in range(length):
                 "TagID": TI,
                 "Tag": Result_Tag,
                 "HDXBINDINGID": Result_HDX_ID,
+                "XML_Object_ID": XML_Object_ID,
                 "Locatie_Top": Result_Top,
                 "Locatie_Left": Result_Left,
                 "Faceplate": Result_Faceplate_Final

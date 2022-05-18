@@ -195,7 +195,7 @@ for x in range(Length_HTML_List):
 
             bigdict = {
                 "ObjectID": y,
-                "displayID": x+1,
+                "DisplayID": x+1,
                 "DisplayName": HTML_Name_List[x],
                 "Object": Result_ID[0],
                 "TagID": TI,

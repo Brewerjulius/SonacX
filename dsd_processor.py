@@ -64,6 +64,7 @@ for counterDSD2 in range(236):
         print(counterDSD1)
         print("yyyyyyyyyyyyy")
 print(combined_dict_list)
+
 with open("dsd.txt", 'w') as f:
     for x3 in range(len(combined_dict_list)):
         #print(combined_dict_list[x3])

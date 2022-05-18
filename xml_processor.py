@@ -5,7 +5,7 @@ from os.path import exists
 #coding: utf-8
 
 # This is the default path
-path = r"C://Users//Julius//PycharmProjects//SonacX//Alle HTML + dsd en xml files"
+path = r"C://Users//j.klein//PycharmProjects//my_sanitizer//Alle HTML + dsd en xml files"
 
 # to store files in a list
 

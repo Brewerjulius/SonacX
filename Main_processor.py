@@ -126,8 +126,9 @@ for x in range(Length_HTML_List):
                                 #print(elem)
 
                         else:
-                            print(XML_Object_ID)
-                            XML_Object_ID = 'Test123'
+                            #print(XML_Object_ID)
+                            XML_Object_ID = None
+                            #XML_Object_ID = 'Test123'
 
             bigdict = {
                 "ObjectID": y,
@@ -136,7 +137,9 @@ for x in range(Length_HTML_List):
                 "TagID": TI,
                 "Tag": Result_Tag,
                 "HDXBINDINGID": Result_HDX_ID,
+                #HDX id staat in zowel de HTML als de XML. Deze vormt de verbinding tussen de 2
                 "XML_Object_ID": XML_Object_ID,
+                #XML id staat zowel in de XML als in de DSD files. Deze vormt de verbinding tussen de 2
                 "Locatie_Top": Result_Top,
                 "Locatie_Left": Result_Left,
                 "Faceplate": Result_Faceplate_Final

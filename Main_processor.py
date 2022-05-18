@@ -39,8 +39,13 @@ listoffolders = []
 counterXML1 = 0
 counterXLM2 = 0
 combined_dict_list = []
+counterDSD1 = 0
 
 XML_Object_ID = []
+DSD_Object_ID_Temp = []
+DSD_Tag_Temp = []
+DSD_Object_ID_To_Dict = []
+DSD_Tag_To_Dict = []
 # dirs=directories
 
 for (root, dirs, file) in os.walk(path2):
@@ -130,6 +135,53 @@ for x in range(Length_HTML_List):
                             XML_Object_ID = None
                             #XML_Object_ID = 'Test123'
 
+
+
+
+###########################################################################
+
+
+            file_existsDSD = exists(path2 + '//' + listoffolders[Length_HTML_List] + '//' + 'DS_datasource1.dsd')
+            if file_existsDSD is True:
+                if XML_Object_ID is not None:
+                    doc = etree.parse(path2 + '//' + listoffolders[Length_HTML_List]
+                                      + '//' + 'DS_datasource1.dsd')  # In dezelfde directory als de .py zetten
+                    root = doc.getroot()
+
+                    # for elem in root.findall("./binding/dataobject"):
+                    with open("dsd.txt", 'w') as h:
+                        for elem in root.findall("./dataobject"):
+                            if len(list(elem)) > 0:
+                                for z in range(len(list(elem))):
+                                    if list(elem)[z].attrib["name"] == "PointRefPointName":
+                                        DSD_Object_ID_Temp = elem.attrib["id"]
+                                        DSD_Tag_Temp = list(elem)[z].text
+
+                                        if DSD_Object_ID_Temp is not None:
+                                            print("xxxxxxxx")
+                                            print(DSD_Object_ID_Temp)
+                                            print(DSD_Tag_Temp)
+                                            print(XML_Object_ID)
+                                            print("xxxxxxxx")
+
+                                            if DSD_Object_ID_Temp == XML_Object_ID:
+                                                DSD_Object_ID_To_Dict = elem.attrib["id"]
+                                                DSD_Tag_To_Dict = list(elem)[z].text
+                                                print("HHHHHHHHHHHHHHHHHHHHHHHH")
+                                            #else:
+                                                #DSD_Object_ID_To_Dict = None
+                                                #DSD_Tag_To_Dict = None
+
+                        counterDSD1 = counterDSD1 + 1
+            else:
+                counterDSD1 = counterDSD1 + 1
+                DSD_Object_ID_Temp = None
+                DSD_Tag_Temp = None
+
+
+
+###########################################################################
+
             bigdict = {
                 "ObjectID": y,
                 "displayID": x+1,
@@ -140,6 +192,9 @@ for x in range(Length_HTML_List):
                 #HDX id staat in zowel de HTML als de XML. Deze vormt de verbinding tussen de 2
                 "XML_Object_ID": XML_Object_ID,
                 #XML id staat zowel in de XML als in de DSD files. Deze vormt de verbinding tussen de 2
+                "DSD_Object_ID": DSD_Object_ID_To_Dict,
+                #duplicate van XML_Object_ID, alleen voor testen van functionaliteit, verwijder later.
+                "DSD_Tag": DSD_Tag_To_Dict,
                 "Locatie_Top": Result_Top,
                 "Locatie_Left": Result_Left,
                 "Faceplate": Result_Faceplate_Final
@@ -147,6 +202,8 @@ for x in range(Length_HTML_List):
             #zoek de data voor de grote van objects ook en zet dat hier bij.
 
             Sanatized_Data_Dict.append(bigdict)
+            DSD_Object_ID_To_Dict = None
+            DSD_Tag_To_Dict = None
 
 with open("HTML_XML_Datasource_Sanatized.txt", 'w') as f:
     for x3 in range(len(Sanatized_Data_Dict)):

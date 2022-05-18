@@ -129,6 +129,7 @@ for x in range(Length_HTML_List):
                 "Locatie_Left": Result_Left,
                 "Faceplate": Result_Faceplate_Final
             }
+            #zoek de data voor de grote van objects ook en zet dat hier bij.
 
             Sanatized_Data_Dict.append(bigdict)
 

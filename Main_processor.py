@@ -8,8 +8,8 @@ from os.path import exists
 import xml.etree.ElementTree as etree
 
 # This is my default path
-path = "C://Users//Julius//PycharmProjects//SonacX"
-path2 = "C://Users//Julius//PycharmProjects//SonacX//Alle HTML + dsd en xml files"
+path = "C://Users//j.klein//PycharmProjects//my_sanitizer"
+path2 = "C://Users//j.klein//PycharmProjects//my_sanitizer//Alle HTML + dsd en xml files"
 
 # to store files in a list
 HTML_Name_List = []

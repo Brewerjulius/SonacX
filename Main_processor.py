@@ -7,8 +7,6 @@ import csv
 from os.path import exists
 import xml.etree.ElementTree as etree
 
-#change for testing
-
 # This is my default path
 path = "C://Users//j.klein//PycharmProjects//my_sanitizer"
 path2 = "C://Users//j.klein//PycharmProjects//my_sanitizer//Alle HTML + dsd en xml files"

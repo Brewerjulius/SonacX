@@ -46,6 +46,7 @@ DSD_Object_ID_Temp = []
 DSD_Tag_Temp = []
 DSD_Object_ID_To_Dict = []
 DSD_Tag_To_Dict = []
+DSD_File_Temp = []
 # dirs=directories
 
 for (root, dirs, file) in os.walk(path2):
@@ -67,6 +68,9 @@ for x in range(Length_HTML_List):
         Result_Top = re.findall(r'[^0-9a-zA-Z\r] TOP: (.+?);', HTML_Content_List[x][x2])
         Result_Left = re.findall(r'[^0-9a-zA-Z\r] LEFT: (.+?)[;"]', HTML_Content_List[x][x2])
         Result_Faceplate1 = re.findall(r'[^0-9a-zA-Z\\]\\(.+?).sha', HTML_Content_List[x][x2])
+        Result_Width = re.findall(r'WIDTH: (.+?);', HTML_Content_List[x][x2])
+        Result_Height = re.findall(r'HEIGHT: (.+?);', HTML_Content_List[x][x2])
+
         if Result_Faceplate1 != None:
             for x3 in range(len(Result_Faceplate1)):
                 Result_Faceplate2 = re.search(r'\\', Result_Faceplate1[x3])
@@ -102,6 +106,12 @@ for x in range(Length_HTML_List):
 
             if len(Result_Faceplate_Final) < 1:
                 Result_Faceplate1 = None
+
+            if len(Result_Width) < 1:
+                Result_Width = None
+
+            if len(Result_Height) < 1:
+                Result_Height = None
 
 
 
@@ -156,18 +166,19 @@ for x in range(Length_HTML_List):
                                     if list(elem)[z].attrib["name"] == "PointRefPointName":
                                         DSD_Object_ID_Temp = elem.attrib["id"]
                                         DSD_Tag_Temp = list(elem)[z].text
-
+                                        DSD_File_Temp = listoffolders[Length_HTML_List]
                                         if DSD_Object_ID_Temp is not None:
-                                            print("xxxxxxxx")
-                                            print(DSD_Object_ID_Temp)
-                                            print(DSD_Tag_Temp)
-                                            print(XML_Object_ID)
-                                            print("xxxxxxxx")
+                                            #print("xxxxxxxx")
+                                            #print(DSD_Object_ID_Temp)
+                                            #print(DSD_Tag_Temp)
+                                            #print(XML_Object_ID)
+                                            #print(HTML_Name_List[x])
+                                            #print("xxxxxxxx")
 
                                             if DSD_Object_ID_Temp == XML_Object_ID:
                                                 DSD_Object_ID_To_Dict = elem.attrib["id"]
                                                 DSD_Tag_To_Dict = list(elem)[z].text
-                                                print("HHHHHHHHHHHHHHHHHHHHHHHH")
+                                                #print("HHHHHHHHHHHHHHHHHHHHHHHH")
                                             #else:
                                                 #DSD_Object_ID_To_Dict = None
                                                 #DSD_Tag_To_Dict = None
@@ -185,6 +196,7 @@ for x in range(Length_HTML_List):
             bigdict = {
                 "ObjectID": y,
                 "displayID": x+1,
+                "DisplayName": HTML_Name_List[x],
                 "Object": Result_ID[0],
                 "TagID": TI,
                 "Tag": Result_Tag,
@@ -197,6 +209,8 @@ for x in range(Length_HTML_List):
                 "DSD_Tag": DSD_Tag_To_Dict,
                 "Locatie_Top": Result_Top,
                 "Locatie_Left": Result_Left,
+                "Width": Result_Width,
+                "Height": Result_Height,
                 "Faceplate": Result_Faceplate_Final
             }
             #zoek de data voor de grote van objects ook en zet dat hier bij.

@@ -150,6 +150,10 @@ for x in range(Length_HTML_List):
 
 ###########################################################################
 
+            DSD_Object_ID_To_Dict = None
+            DSD_Tag_To_Dict = None
+            DSD_Object_ID_Temp = None
+            DSD_Tag_Temp = None
 
             file_existsDSD = exists(path2 + '//' + listoffolders[Length_HTML_List] + '//' + 'DS_datasource1.dsd')
             if file_existsDSD is True:
@@ -178,6 +182,7 @@ for x in range(Length_HTML_List):
                                             if DSD_Object_ID_Temp == XML_Object_ID:
                                                 DSD_Object_ID_To_Dict = elem.attrib["id"]
                                                 DSD_Tag_To_Dict = list(elem)[z].text
+                                                break
                                                 #print("HHHHHHHHHHHHHHHHHHHHHHHH")
                                             #else:
                                                 #DSD_Object_ID_To_Dict = None
@@ -197,7 +202,7 @@ for x in range(Length_HTML_List):
                 "ObjectID": y,
                 "DisplayID": x+1,
                 "DisplayName": HTML_Name_List[x],
-                "Object": Result_ID[0],
+                "ObjectName": Result_ID[0],
                 "TagID": TI,
                 "Tag": Result_Tag,
                 "HDXBINDINGID": Result_HDX_ID,
@@ -216,8 +221,7 @@ for x in range(Length_HTML_List):
             #zoek de data voor de grote van objects ook en zet dat hier bij.
 
             Sanatized_Data_Dict.append(bigdict)
-            DSD_Object_ID_To_Dict = None
-            DSD_Tag_To_Dict = None
+
 
 with open("HTML_XML_Datasource_Sanatized.txt", 'w') as f:
     for x3 in range(len(Sanatized_Data_Dict)):

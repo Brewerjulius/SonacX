@@ -51,7 +51,7 @@ DSD_File_Temp = []
 
 for (root, dirs, file) in os.walk(path2):
     for f in dirs:
-         listoffolders.append(f)
+        listoffolders.append(f)
 
 
 for x in range(Length_HTML_List):
@@ -188,9 +188,7 @@ for x in range(Length_HTML_List):
                                                 #DSD_Object_ID_To_Dict = None
                                                 #DSD_Tag_To_Dict = None
 
-                        counterDSD1 = counterDSD1 + 1
             else:
-                counterDSD1 = counterDSD1 + 1
                 DSD_Object_ID_Temp = None
                 DSD_Tag_Temp = None
 
@@ -225,7 +223,7 @@ for x in range(Length_HTML_List):
 
 with open("HTML_XML_Datasource_Sanatized.txt", 'w') as f:
     for x3 in range(len(Sanatized_Data_Dict)):
-        print(Sanatized_Data_Dict[x3])
+        #print(Sanatized_Data_Dict[x3])
         f.write(json.dumps(Sanatized_Data_Dict[x3]))
 
 print(len(Sanatized_Data_Dict))

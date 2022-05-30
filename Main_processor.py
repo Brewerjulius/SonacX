@@ -36,7 +36,7 @@ counterDSD1 = 0
 
 # Loop trough dirs and collect HTML filenames for list
 print("Creating file list: ")
-for (root, dirs, file) in os.walk(path_main):
+for (root, dirs, file) in os.walk(path_data):
     for f in file:
         if '.htm' in f:
             print(f)

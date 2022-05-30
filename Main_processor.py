@@ -1,126 +1,121 @@
-# import OS module
+# Import OS modules
 import json
 import os
 import re
-import csv
-
 from os.path import exists
 import xml.etree.ElementTree as etree
 
-# This is my default path
-path = "C://Users//j.klein//PycharmProjects//my_sanitizer"
-path2 = "C://Users//j.klein//PycharmProjects//my_sanitizer//Alle HTML + dsd en xml files"
+# These are the default paths
+path_main = os.getcwd()
+path_data = path_main + "/data"
 
-# to store files in a list
-HTML_Name_List = []
+# Initialise some lists
+html_name_list = []
+html_content_list = []
+content_list_verfied_full = []
+sanatized_data_dict = []
+result_faceplate_final = []
+combined_dict_list = []
+listoffolders = []
+xml_object_id = []
+dsd_object_id_temp = []
+dsd_tag_temp = []
+dsd_object_id_to_dict = []
+dsd_tag_to_dict = []
+DSD_File_Temp = []
 
-HTML_Content_List = []
-Content_List_Verfied_Full = []
-Sanatized_Data_Dict = []
-Result_Faceplate_Final = []
+# Initialise variables
+# count = 1
+object_id_counter = 1
+tag_counter = 1
+tag_id = 0
+length_hdx = 0
+counterXML1 = 0
+counterXLM2 = 0
+counterDSD1 = 0
 
-count = 1
-y = 1
-T = 1
-TI = 0
-LengteHDX = 0
-# dirs=directories
-
-for (root, dirs, file) in os.walk(path):
+# Loop trough dirs and collect HTML filenames for list
+print("Creating file list: ")
+for (root, dirs, file) in os.walk(path_main):
     for f in file:
         if '.htm' in f:
             print(f)
-            HTML_Name_List.append(f)
+            html_name_list.append(f)
 
+print("\nList created.\n")
 
-Length_HTML_List = len(HTML_Name_List)
+# Get list length
+length_html_list = len(html_name_list)
 
-listoffolders = []
-counterXML1 = 0
-counterXLM2 = 0
-combined_dict_list = []
-counterDSD1 = 0
-
-XML_Object_ID = []
-DSD_Object_ID_Temp = []
-DSD_Tag_Temp = []
-DSD_Object_ID_To_Dict = []
-DSD_Tag_To_Dict = []
-DSD_File_Temp = []
-# dirs=directories
-
-for (root, dirs, file) in os.walk(path2):
+# Loop through folder names
+for (root, dirs, file) in os.walk(path_data):
     for f in dirs:
         listoffolders.append(f)
+# Get bare filenames (without extension)
 
+print("**Now processing data, please wait.**\n")
 
-for x in range(Length_HTML_List):
-    html = open(path + "//Alle HTML + dsd en xml files//" + HTML_Name_List[x], 'r', encoding="latin-1").read()
+for x in range(length_html_list):
+    file_verification = False
+    html = open(path_data + "/" + html_name_list[x], 'r', encoding="latin-1").read()
+
     stripped = re.sub(r"\s+", " ", html)
 
     result = re.findall(r'<.+?>', stripped)
-    HTML_Content_List.append(result)
+    html_content_list.append(result)
 
-    for x2 in range(len(HTML_Content_List[x])):
-        Result_ID = re.findall(r'id=(.+?) ', HTML_Content_List[x][x2])
-        Result_Tag = re.findall(r'Tag:(.+?);', HTML_Content_List[x][x2])
-        Result_HDX_ID = re.findall(r'HDXBINDINGID:(.+?);', HTML_Content_List[x][x2])
-        Result_Top = re.findall(r'[^0-9a-zA-Z\r] TOP: (.+?);', HTML_Content_List[x][x2])
-        Result_Left = re.findall(r'[^0-9a-zA-Z\r] LEFT: (.+?)[;"]', HTML_Content_List[x][x2])
-        Result_Faceplate1 = re.findall(r'src = "[^0-9a-zA-Z\\]\\(.+?).sha', HTML_Content_List[x][x2])
-        #"ObjectID": 32200   De toevoeging van "src =" aan het filter was omdat de faceplate compleet -
-        #stuk was bij her eerder gegeven Object ID
-        Result_Width = re.findall(r'WIDTH: (.+?);', HTML_Content_List[x][x2])
-        Result_Height = re.findall(r'HEIGHT: (.+?);', HTML_Content_List[x][x2])
+    for x2 in range(len(html_content_list[x])):
+        result_id = re.findall(r'id=(.+?) ', html_content_list[x][x2])
+        result_tag = re.findall(r'Tag:(.+?);', html_content_list[x][x2])
+        result_hdx_id = re.findall(r'HDXBINDINGID:(.+?);', html_content_list[x][x2])
+        result_top = re.findall(r'[^0-9a-zA-Z\r] TOP: (.+?);', html_content_list[x][x2])
+        result_left = re.findall(r'[^0-9a-zA-Z\r] LEFT: (.+?)[;"]', html_content_list[x][x2])
+        result_faceplate_1 = re.findall(r'src = "[^0-9a-zA-Z\\]\\(.+?).sha', html_content_list[x][x2])
+        result_width = re.findall(r'WIDTH: (.+?);', html_content_list[x][x2])
+        result_height = re.findall(r'HEIGHT: (.+?);', html_content_list[x][x2])
 
-        if Result_Faceplate1 != None:
-            for x3 in range(len(Result_Faceplate1)):
-                Result_Faceplate2 = re.search(r'\\', Result_Faceplate1[x3])
-                #print(Result_Faceplate2)
-                Result_Faceplate3 = Result_Faceplate2.end()
-                #print(Result_Faceplate3)
-                Result_Faceplate_Final = re.sub(r'.', '', Result_Faceplate1[x3], count=Result_Faceplate3)
-        if Result_Faceplate1 == None:
-            Result_Faceplate_Final == None
+        if result_faceplate_1 != None:
+            for x3 in range(len(result_faceplate_1)):
+                result_faceplate_2 = re.search(r'\\', result_faceplate_1[x3])
+                result_faceplate_3 = result_faceplate_2.end()
+                result_faceplate_final = re.sub(r'.', '', result_faceplate_1[x3], count=result_faceplate_3)
+        if result_faceplate_1 == None:
+            result_faceplate_final = None
 
-        #print(Result_ID)
-        #print(Result_Faceplate1)
-        if "id=" in HTML_Content_List[x][x2] and len(Result_ID) > 0: #and len(Result_Tag) > 0: #<---------------------------------------------
-            Content_List_Verfied_Full.append(HTML_Content_List[x][x2])
-            y = y+1
-            if len(Result_Tag) > 0:
-                TI = T
-                T = T+1
+        if "id=" in html_content_list[x][x2] and len(result_id) > 0: # And len(Result_Tag) > 0: #<----------------------
+            content_list_verfied_full.append(html_content_list[x][x2])
+            object_id_counter = object_id_counter + 1
+            if len(result_tag) > 0:
+                tag_id = tag_counter
+                tag_counter = tag_counter + 1
             else:
-                TI = None
+                tag_id = None
 
-            if len(Result_HDX_ID) > 0:
-                LengteHDX = LengteHDX + 1
+            if len(result_hdx_id) > 0:
+                length_hdx = length_hdx + 1
 
-            if len(Result_HDX_ID) < 1:
-                Result_HDX_ID = None
+            if len(result_hdx_id) < 1:
+                result_hdx_id = None
 
-            if len(Result_Top) < 1:
-                Result_Top = None
+            if len(result_top) < 1:
+                result_top = None
 
-            if len(Result_Left) < 1:
-                Result_Left = None
+            if len(result_left) < 1:
+                result_left = None
 
-            if len(Result_Faceplate_Final) < 1:
-                Result_Faceplate1 = None
+            if len(result_faceplate_final) < 1:
+                result_faceplate_1 = None
 
-            if len(Result_Width) < 1:
-                Result_Width = None
+            if len(result_width) < 1:
+                result_width = None
 
-            if len(Result_Height) < 1:
-                Result_Height = None
+            if len(result_height) < 1:
+                result_height = None
 
-
-
-            file_existsXLM = exists(path2 + '//' + listoffolders[Length_HTML_List] + '//' + 'bindings.xml')
+            file_existsXLM = exists(path_data + '/' + listoffolders[length_html_list] + '/' + 'bindings.xml')
             if file_existsXLM is True:
-                doc = etree.parse(path2 + '//' + listoffolders[
-                    counterXML1] + '//' + 'bindings.xml')  # In dezelfde directory als de .py zetten
+                doc = etree.parse(path_data + '/' + listoffolders[
+                    counterXML1] + '/' + 'bindings.xml')
                 root = doc.getroot()
 
                 for elem in root.findall("./binding"):
@@ -129,104 +124,75 @@ for x in range(Length_HTML_List):
                         child = list(elem)[0].attrib
                         attributes["objectid"] = child["objectid"]
                         attributes["Display"] = listoffolders[counterXML1]
-                        #print(attributes)
-
-
-                        if Result_HDX_ID is not None:
-                            #print(Result_HDX_ID[0])
-                            #print("xxxxxxxxxxxxvvvvvvvv")
-                            #print(attributes["ID"])
-                            if attributes["ID"] is Result_HDX_ID[0]:
-
-                                XML_Object_ID = attributes["objectid"]
-                                #print(elem.attrib["ID"])
-                                #print(elem)
-
+                        if result_hdx_id is not None:
+                            if attributes["ID"] is result_hdx_id[0]:
+                                xml_object_id = attributes["objectid"]
                         else:
-                            #print(XML_Object_ID)
-                            XML_Object_ID = None
-                            #XML_Object_ID = 'Test123'
+                            xml_object_id = None
 
+            dsd_object_id_to_dict = None
+            dsd_tag_to_dict = None
+            dsd_object_id_temp = None
+            dsd_tag_temp = None
 
-
-
-###########################################################################
-
-            DSD_Object_ID_To_Dict = None
-            DSD_Tag_To_Dict = None
-            DSD_Object_ID_Temp = None
-            DSD_Tag_Temp = None
-
-            file_existsDSD = exists(path2 + '//' + listoffolders[Length_HTML_List] + '//' + 'DS_datasource1.dsd')
-            if file_existsDSD is True:
-                if XML_Object_ID is not None:
-                    doc = etree.parse(path2 + '//' + listoffolders[Length_HTML_List]
-                                      + '//' + 'DS_datasource1.dsd')  # In dezelfde directory als de .py zetten
+            file_exists_dsd = exists(path_data + '/' + listoffolders[length_html_list] + '/' + 'DS_datasource1.dsd')
+            if file_exists_dsd is True:
+                if xml_object_id is not None:
+                    doc = etree.parse(path_data + '/' + listoffolders[length_html_list]
+                                      + '/' + 'DS_datasource1.dsd')
                     root = doc.getroot()
 
-                    # for elem in root.findall("./binding/dataobject"):
                     with open("dsd.txt", 'w') as h:
                         for elem in root.findall("./dataobject"):
                             if len(list(elem)) > 0:
                                 for z in range(len(list(elem))):
                                     if list(elem)[z].attrib["name"] == "PointRefPointName":
-                                        DSD_Object_ID_Temp = elem.attrib["id"]
-                                        DSD_Tag_Temp = list(elem)[z].text
-                                        DSD_File_Temp = listoffolders[Length_HTML_List]
-                                        if DSD_Object_ID_Temp is not None:
-                                            #print("xxxxxxxx")
-                                            #print(DSD_Object_ID_Temp)
-                                            #print(DSD_Tag_Temp)
-                                            #print(XML_Object_ID)
-                                            #print(HTML_Name_List[x])
-                                            #print("xxxxxxxx")
+                                        dsd_object_id_temp = elem.attrib["id"]
+                                        dsd_tag_temp = list(elem)[z].text
+                                        DSD_File_Temp = listoffolders[length_html_list]
+                                        if dsd_object_id_temp is not None:
 
-                                            if DSD_Object_ID_Temp == XML_Object_ID:
-                                                DSD_Object_ID_To_Dict = elem.attrib["id"]
-                                                DSD_Tag_To_Dict = list(elem)[z].text
+                                            if dsd_object_id_temp == xml_object_id:
+                                                dsd_object_id_to_dict = elem.attrib["id"]
+                                                dsd_tag_to_dict = list(elem)[z].text
                                                 break
-                                                #print("HHHHHHHHHHHHHHHHHHHHHHHH")
-                                            #else:
-                                                #DSD_Object_ID_To_Dict = None
-                                                #DSD_Tag_To_Dict = None
-
             else:
-                DSD_Object_ID_Temp = None
-                DSD_Tag_Temp = None
-
-
-
-###########################################################################
+                dsd_object_id_temp = None
+                dsd_tag_temp = None
 
             bigdict = {
-                "ObjectID": y,
+                "ObjectID": object_id_counter,
                 "DisplayID": x+1,
-                "DisplayName": HTML_Name_List[x],
-                "ObjectName": Result_ID[0],
-                "TagID": TI,
-                "Tag": Result_Tag,
-                "HDXBINDINGID": Result_HDX_ID,
-                #HDX id staat in zowel de HTML als de XML. Deze vormt de verbinding tussen de 2
-                "XML_Object_ID": XML_Object_ID,
-                #XML id staat zowel in de XML als in de DSD files. Deze vormt de verbinding tussen de 2
-                "DSD_Object_ID": DSD_Object_ID_To_Dict,
+                "DisplayName": html_name_list[x],
+                "ObjectName": result_id[0],
+                "TagID": tag_id,
+                "Tag": result_tag,
+                "HDXBINDINGID": result_hdx_id,
+                #HDX id is the key between XML and HTML
+                "XML_Object_ID": xml_object_id,
+                #XML id is the key between XML and DSD
+                "DSD_Object_ID": dsd_object_id_to_dict,
                 #duplicate van XML_Object_ID, alleen voor testen van functionaliteit, verwijder later.
-                "DSD_Tag": DSD_Tag_To_Dict,
-                "Locatie_Top": Result_Top,
-                "Locatie_Left": Result_Left,
-                "Width": Result_Width,
-                "Height": Result_Height,
-                "Faceplate": Result_Faceplate_Final
+                "DSD_Tag": dsd_tag_to_dict,
+                "Locatie_Top": result_top,
+                "Locatie_Left": result_left,
+                "Width": result_width,
+                "Height": result_height,
+                "Faceplate": result_faceplate_final
             }
-            #zoek de data voor de grote van objects ook en zet dat hier bij.
 
-            Sanatized_Data_Dict.append(bigdict)
+            if bigdict is not None:
+                file_verification = True
+
+            sanatized_data_dict.append(bigdict)
+
+    if file_verification is False:
+        print("File \"" + html_name_list[x] + "\" is invalid or has no data.")
 
 
 with open("HTML_XML_Datasource_Sanatized.txt", 'w') as f:
-    for x3 in range(len(Sanatized_Data_Dict)):
-        #print(Sanatized_Data_Dict[x3])
-        f.write(json.dumps(Sanatized_Data_Dict[x3]))
+    for x3 in range(len(sanatized_data_dict)):
+        f.write(json.dumps(sanatized_data_dict[x3]))
 
-print(len(Sanatized_Data_Dict))
-print(LengteHDX)
+print("\nEntries processed: " + str(len(sanatized_data_dict)))
+print("\nEnd of program")

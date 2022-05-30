@@ -67,7 +67,9 @@ for x in range(Length_HTML_List):
         Result_HDX_ID = re.findall(r'HDXBINDINGID:(.+?);', HTML_Content_List[x][x2])
         Result_Top = re.findall(r'[^0-9a-zA-Z\r] TOP: (.+?);', HTML_Content_List[x][x2])
         Result_Left = re.findall(r'[^0-9a-zA-Z\r] LEFT: (.+?)[;"]', HTML_Content_List[x][x2])
-        Result_Faceplate1 = re.findall(r'[^0-9a-zA-Z\\]\\(.+?).sha', HTML_Content_List[x][x2])
+        Result_Faceplate1 = re.findall(r'src = "[^0-9a-zA-Z\\]\\(.+?).sha', HTML_Content_List[x][x2])
+        #"ObjectID": 32200   De toevoeging van "src =" aan het filter was omdat de faceplate compleet -
+        #stuk was bij her eerder gegeven Object ID
         Result_Width = re.findall(r'WIDTH: (.+?);', HTML_Content_List[x][x2])
         Result_Height = re.findall(r'HEIGHT: (.+?);', HTML_Content_List[x][x2])
 

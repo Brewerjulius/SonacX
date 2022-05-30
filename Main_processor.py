@@ -16,13 +16,13 @@ content_list_verfied_full = []
 sanatized_data_dict = []
 result_faceplate_final = []
 combined_dict_list = []
-listoffolders = []
+list_of_folders = []
 xml_object_id = []
 dsd_object_id_temp = []
 dsd_tag_temp = []
 dsd_object_id_to_dict = []
 dsd_tag_to_dict = []
-DSD_File_Temp = []
+dsd_file_temp = []
 
 # Initialise variables
 # count = 1
@@ -50,7 +50,7 @@ length_html_list = len(html_name_list)
 # Loop through folder names
 for (root, dirs, file) in os.walk(path_data):
     for f in dirs:
-        listoffolders.append(f)
+        list_of_folders.append(f)
 # Get bare filenames (without extension)
 
 print("**Now processing data, please wait.**\n")
@@ -112,9 +112,9 @@ for x in range(length_html_list):
             if len(result_height) < 1:
                 result_height = None
 
-            file_existsXLM = exists(path_data + '/' + listoffolders[length_html_list] + '/' + 'bindings.xml')
+            file_existsXLM = exists(path_data + '/' + list_of_folders[length_html_list] + '/' + 'bindings.xml')
             if file_existsXLM is True:
-                doc = etree.parse(path_data + '/' + listoffolders[
+                doc = etree.parse(path_data + '/' + list_of_folders[
                     counterXML1] + '/' + 'bindings.xml')
                 root = doc.getroot()
 
@@ -123,7 +123,7 @@ for x in range(length_html_list):
                         attributes = elem.attrib
                         child = list(elem)[0].attrib
                         attributes["objectid"] = child["objectid"]
-                        attributes["Display"] = listoffolders[counterXML1]
+                        attributes["Display"] = list_of_folders[counterXML1]
                         if result_hdx_id is not None:
                             if attributes["ID"] is result_hdx_id[0]:
                                 xml_object_id = attributes["objectid"]
@@ -135,27 +135,27 @@ for x in range(length_html_list):
             dsd_object_id_temp = None
             dsd_tag_temp = None
 
-            file_exists_dsd = exists(path_data + '/' + listoffolders[length_html_list] + '/' + 'DS_datasource1.dsd')
+            file_exists_dsd = exists(path_data + '/' + list_of_folders[length_html_list] + '/' + 'DS_datasource1.dsd')
             if file_exists_dsd is True:
                 if xml_object_id is not None:
-                    doc = etree.parse(path_data + '/' + listoffolders[length_html_list]
+                    doc = etree.parse(path_data + '/' + list_of_folders[length_html_list]
                                       + '/' + 'DS_datasource1.dsd')
                     root = doc.getroot()
 
-                    with open("dsd.txt", 'w') as h:
-                        for elem in root.findall("./dataobject"):
-                            if len(list(elem)) > 0:
-                                for z in range(len(list(elem))):
-                                    if list(elem)[z].attrib["name"] == "PointRefPointName":
-                                        dsd_object_id_temp = elem.attrib["id"]
-                                        dsd_tag_temp = list(elem)[z].text
-                                        DSD_File_Temp = listoffolders[length_html_list]
-                                        if dsd_object_id_temp is not None:
 
-                                            if dsd_object_id_temp == xml_object_id:
-                                                dsd_object_id_to_dict = elem.attrib["id"]
-                                                dsd_tag_to_dict = list(elem)[z].text
-                                                break
+                    for elem in root.findall("./dataobject"):
+                        if len(list(elem)) > 0:
+                            for z in range(len(list(elem))):
+                                if list(elem)[z].attrib["name"] == "PointRefPointName":
+                                    dsd_object_id_temp = elem.attrib["id"]
+                                    dsd_tag_temp = list(elem)[z].text
+                                    dsd_file_temp = list_of_folders[length_html_list]
+                                    if dsd_object_id_temp is not None:
+
+                                        if dsd_object_id_temp == xml_object_id:
+                                            dsd_object_id_to_dict = elem.attrib["id"]
+                                            dsd_tag_to_dict = list(elem)[z].text
+                                            break
             else:
                 dsd_object_id_temp = None
                 dsd_tag_temp = None

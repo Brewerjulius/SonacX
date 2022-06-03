@@ -53,17 +53,24 @@ for (root, dirs, file) in os.walk(path_data):
         list_of_folders.append(f)
 # Get bare filenames (without extension)
 
+#Data processing message.
 print("**Now processing data, please wait.**\n")
 
+#Start of programm loop.
 for x in range(length_html_list):
     file_verification = False
+
+    #Filling String with data from HTML file.
     html = open(path_data + "/" + html_name_list[x], 'r', encoding="latin-1").read()
 
+    #Stripping the HTML string.
     stripped = re.sub(r"\s+", " ", html)
 
+    #Making list of all the lines between "<" and ">".
     result = re.findall(r'<.+?>', stripped)
     html_content_list.append(result)
 
+    #Filter loop start.
     for x2 in range(len(html_content_list[x])):
         result_id = re.findall(r'id=(.+?) ', html_content_list[x][x2])
         result_tag = re.findall(r'Tag:(.+?);', html_content_list[x][x2])
@@ -74,6 +81,7 @@ for x in range(length_html_list):
         result_width = re.findall(r'WIDTH: (.+?);', html_content_list[x][x2])
         result_height = re.findall(r'HEIGHT: (.+?);', html_content_list[x][x2])
 
+        #Filtering the data from the Faceplate. Removing unwanted parts.
         if result_faceplate_1 != None:
             for x3 in range(len(result_faceplate_1)):
                 result_faceplate_2 = re.search(r'\\', result_faceplate_1[x3])
@@ -82,6 +90,9 @@ for x in range(length_html_list):
         if result_faceplate_1 == None:
             result_faceplate_final = None
 
+        #Verify if a ID is present.
+        #IF no ID is found there is no data, and this loop will be skipped.
+        #IF an ID is found the data is processed and added to a list.
         if "id=" in html_content_list[x][x2] and len(result_id) > 0: # And len(Result_Tag) > 0: #<----------------------
             content_list_verfied_full.append(html_content_list[x][x2])
             object_id_counter = object_id_counter + 1
@@ -91,6 +102,7 @@ for x in range(length_html_list):
             else:
                 tag_id = None
 
+            #Setting variables to None if the variable is 1 or lower.
             if len(result_hdx_id) > 0:
                 length_hdx = length_hdx + 1
 
@@ -112,12 +124,14 @@ for x in range(length_html_list):
             if len(result_height) < 1:
                 result_height = None
 
+            #Reading Data from XML files.
             file_existsXLM = exists(path_data + '/' + list_of_folders[length_html_list] + '/' + 'bindings.xml')
             if file_existsXLM is True:
                 doc = etree.parse(path_data + '/' + list_of_folders[
                     counterXML1] + '/' + 'bindings.xml')
                 root = doc.getroot()
 
+                #Filtering data from XML files.
                 for elem in root.findall("./binding"):
                     if len(list(elem)) > 0 and elem.attrib["ID"] != "pageparam":
                         attributes = elem.attrib
@@ -130,11 +144,13 @@ for x in range(length_html_list):
                         else:
                             xml_object_id = None
 
+            #Emptying DSD variables
             dsd_object_id_to_dict = None
             dsd_tag_to_dict = None
             dsd_object_id_temp = None
             dsd_tag_temp = None
 
+            #Reading .dsd file data.
             file_exists_dsd = exists(path_data + '/' + list_of_folders[length_html_list] + '/' + 'DS_datasource1.dsd')
             if file_exists_dsd is True:
                 if xml_object_id is not None:
@@ -142,7 +158,7 @@ for x in range(length_html_list):
                                       + '/' + 'DS_datasource1.dsd')
                     root = doc.getroot()
 
-
+                    #Filtering dsd file data.
                     for elem in root.findall("./dataobject"):
                         if len(list(elem)) > 0:
                             for z in range(len(list(elem))):
@@ -160,6 +176,7 @@ for x in range(length_html_list):
                 dsd_object_id_temp = None
                 dsd_tag_temp = None
 
+            #adding data to a dict.
             bigdict = {
                 "ObjectID": object_id_counter,
                 "DisplayID": x+1,
@@ -181,18 +198,25 @@ for x in range(length_html_list):
                 "Faceplate": result_faceplate_final
             }
 
+            #Error catcher. If no data is found, set file verification to True indicating something went wrong.
             if bigdict is not None:
                 file_verification = True
 
             sanatized_data_dict.append(bigdict)
 
+    #Verify if a file had any data in it. IF its empty print message.
     if file_verification is False:
         print("File \"" + html_name_list[x] + "\" is invalid or has no data.")
 
-
+#Data dumb from all the filtered data to a text file.
 with open("HTML_XML_Datasource_Sanatized.txt", 'w') as f:
     for x3 in range(len(sanatized_data_dict)):
         f.write(json.dumps(sanatized_data_dict[x3]))
 
-print("\nEntries processed: " + str(len(sanatized_data_dict)))
-print("\nEnd of program")
+#Programm end with error catch.
+if(len(sanatized_data_dict) < 1):
+    print("A fatal error has occured")
+else:
+    print("\nEntries processed: " + str(len(sanatized_data_dict)))
+    print("\nEnd of program")
+input("Press Enter to continue...")

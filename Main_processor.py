@@ -4,6 +4,7 @@ import os
 import re
 from os.path import exists
 import xml.etree.ElementTree as etree
+from datetime import datetime
 
 # These are the default paths
 path_main = os.getcwd()
@@ -207,6 +208,11 @@ for x in range(length_html_list):
     #Verify if a file had any data in it. IF its empty print message.
     if file_verification is False:
         print("File \"" + html_name_list[x] + "\" is invalid or has no data.")
+        logstring = (html_name_list[x] + "\" is invalid or has no data.\n")
+
+        logdict = {
+            "File": logstring
+        }
 
 #Data dumb from all the filtered data to a text file.
 with open("HTML_XML_Datasource_Sanatized.txt", 'w') as f:
@@ -219,4 +225,12 @@ if(len(sanatized_data_dict) < 1):
 else:
     print("\nEntries processed: " + str(len(sanatized_data_dict)))
     print("\nEnd of program")
+
+    #Make and fill a log file. Timeformat: dd-mm-YY H:M:S
+    dt_string = now.strftime("%d-%m-%Y %H:%M:%S")
+    print("date and time =", dt_string)
+
+    with open('Log' + dt_string + '.txt', 'w') as f:
+        f.write(logdict)
+
 input("Press Enter to continue...")

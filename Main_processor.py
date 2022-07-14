@@ -36,6 +36,14 @@ counterXML1 = 0
 counterXLM2 = 0
 counterDSD1 = 0
 
+# datetime object containing current date and time
+now = datetime.now()
+
+# Make and fill a log file. Timeformat: dd-mm-YY H:M:S
+dt_string = now.strftime("%d-%m-%Y %H.%M.%S")
+print("date and time =", dt_string)
+
+fileNameString = 'Log' + dt_string + '.txt'
 
 # Loop trough dirs and collect HTML filenames for list
 print("Creating file list: ")
@@ -211,18 +219,20 @@ for x in range(length_html_list):
     #Verify if a file had any data in it. IF its empty print message.
     if file_verification is False:
 
-        sys.stdout = open(path_logger, 'w')
+        #sys.stdout = open(path_logger, 'w')
 
         print("File \"" + html_name_list[x] + "\" is invalid or has no data.")
-        logstring = (html_name_list[x] + "\" is invalid or has no data.\n")
 
-        #sys.stdout.close()
+        with open(fileNameString, "a") as external_file:
+            logstring = (html_name_list[x] + "\" is invalid or has no data.\n")
+            print(logstring, file=external_file)
+            external_file.close()
+
 
 #Data dumb from all the filtered data to a text file.
 with open("HTML_XML_Datasource_Sanatized.txt", 'w') as f:
     for x3 in range(len(sanatized_data_dict)):
         f.write(json.dumps(sanatized_data_dict[x3]))
-
 
 
 #Programm end with error catch.
@@ -231,16 +241,5 @@ if(len(sanatized_data_dict) < 1):
 else:
     print("\nEntries processed: " + str(len(sanatized_data_dict)))
     print("\nEnd of program")
-
-    # datetime object containing current date and time
-    #now = datetime.now()
-
-    #Make and fill a log file. Timeformat: dd-mm-YY H:M:S
-    #dt_string = now.strftime("%d-%m-%Y %H.%M.%S")
-    #print("date and time =", dt_string)
-
-    #fileNameString = 'Log' + dt_string + '.txt'
-    #with open(fileNameString, 'w') as f:
-    #    f.write(Log_String_Long)
 
 input("Press Enter to continue...")

@@ -24,7 +24,6 @@ dsd_tag_temp = []
 dsd_object_id_to_dict = []
 dsd_tag_to_dict = []
 dsd_file_temp = []
-
 # Initialise variables
 # count = 1
 object_id_counter = 1
@@ -172,6 +171,7 @@ for x in range(length_html_list):
                                         if dsd_object_id_temp == xml_object_id:
                                             dsd_object_id_to_dict = elem.attrib["id"]
                                             dsd_tag_to_dict = list(elem)[z].text
+                                            z = range(len(list(elem)))
                                             break
             else:
                 dsd_object_id_temp = None
@@ -204,15 +204,14 @@ for x in range(length_html_list):
                 file_verification = True
 
             sanatized_data_dict.append(bigdict)
+    Log_String_Long = "Start of log\n"
 
     #Verify if a file had any data in it. IF its empty print message.
     if file_verification is False:
         print("File \"" + html_name_list[x] + "\" is invalid or has no data.")
         logstring = (html_name_list[x] + "\" is invalid or has no data.\n")
 
-        logdict = {
-            "File": logstring
-        }
+        Log_String_Long = Log_String_Long + "Log:\n" + logstring
 
 #Data dumb from all the filtered data to a text file.
 with open("HTML_XML_Datasource_Sanatized.txt", 'w') as f:
@@ -226,11 +225,15 @@ else:
     print("\nEntries processed: " + str(len(sanatized_data_dict)))
     print("\nEnd of program")
 
+    # datetime object containing current date and time
+    now = datetime.now()
+
     #Make and fill a log file. Timeformat: dd-mm-YY H:M:S
-    dt_string = now.strftime("%d-%m-%Y %H:%M:%S")
+    dt_string = now.strftime("%d-%m-%Y %H.%M.%S")
     print("date and time =", dt_string)
 
-    with open('Log' + dt_string + '.txt', 'w') as f:
-        f.write(logdict)
+    fileNameString = 'Log' + dt_string + '.txt'
+    with open(fileNameString, 'w') as f:
+        f.write(Log_String_Long)
 
 input("Press Enter to continue...")

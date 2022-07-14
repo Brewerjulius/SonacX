@@ -5,10 +5,12 @@ import re
 from os.path import exists
 import xml.etree.ElementTree as etree
 from datetime import datetime
+import sys
 
 # These are the default paths
 path_main = os.getcwd()
 path_data = path_main + "/data"
+path_logger = path_main + "/log.txt"
 
 # Initialise some lists
 html_name_list = []
@@ -33,6 +35,7 @@ length_hdx = 0
 counterXML1 = 0
 counterXLM2 = 0
 counterDSD1 = 0
+
 
 # Loop trough dirs and collect HTML filenames for list
 print("Creating file list: ")
@@ -204,19 +207,23 @@ for x in range(length_html_list):
                 file_verification = True
 
             sanatized_data_dict.append(bigdict)
-    Log_String_Long = "Start of log\n"
 
     #Verify if a file had any data in it. IF its empty print message.
     if file_verification is False:
+
+        sys.stdout = open(path_logger, 'w')
+
         print("File \"" + html_name_list[x] + "\" is invalid or has no data.")
         logstring = (html_name_list[x] + "\" is invalid or has no data.\n")
 
-        Log_String_Long = Log_String_Long + "Log:\n" + logstring
+        #sys.stdout.close()
 
 #Data dumb from all the filtered data to a text file.
 with open("HTML_XML_Datasource_Sanatized.txt", 'w') as f:
     for x3 in range(len(sanatized_data_dict)):
         f.write(json.dumps(sanatized_data_dict[x3]))
+
+
 
 #Programm end with error catch.
 if(len(sanatized_data_dict) < 1):
@@ -226,14 +233,14 @@ else:
     print("\nEnd of program")
 
     # datetime object containing current date and time
-    now = datetime.now()
+    #now = datetime.now()
 
     #Make and fill a log file. Timeformat: dd-mm-YY H:M:S
-    dt_string = now.strftime("%d-%m-%Y %H.%M.%S")
-    print("date and time =", dt_string)
+    #dt_string = now.strftime("%d-%m-%Y %H.%M.%S")
+    #print("date and time =", dt_string)
 
-    fileNameString = 'Log' + dt_string + '.txt'
-    with open(fileNameString, 'w') as f:
-        f.write(Log_String_Long)
+    #fileNameString = 'Log' + dt_string + '.txt'
+    #with open(fileNameString, 'w') as f:
+    #    f.write(Log_String_Long)
 
 input("Press Enter to continue...")

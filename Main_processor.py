@@ -36,6 +36,23 @@ counterXML1 = 0
 counterXLM2 = 0
 counterDSD1 = 0
 
+#Log counters
+counterObjectID = 0
+counterDisplayName = 0
+counterObjectName = 0
+counterTagID = 0
+counterTag = 0
+counterHDXBINDINGID = 0
+counterXML_Object_ID = 0
+counterDSD_Object_ID = 0
+counterDSD_Tag = 0
+counterLocatie_Top = 0
+counterLocatie_Left = 0
+counterWidth = 0
+counterHeight = 0
+counterFaceplate = 0
+
+
 # datetime object containing current date and time
 now = datetime.now()
 
@@ -69,6 +86,11 @@ print("**Now processing data, please wait.**\n")
 
 #Start of programm loop.
 for x in range(length_html_list):
+
+    counterHDXBINDINGID_Per_File = 0
+    counterXML_Object_ID_Per_File = 0
+    counterDSD_Object_ID_Per_File = 0
+
     file_verification = False
 
     #Filling String with data from HTML file.
@@ -136,7 +158,7 @@ for x in range(length_html_list):
                 result_height = None
 
             #Reading Data from XML files.
-            file_existsXLM = exists(path_data + '/' + list_of_folders[length_html_list] + '/' + 'bindings.xml')
+            file_existsXLM = exists(path_data + '/' + list_of_folders[x] + '/' + 'bindings.xml')
             if file_existsXLM is True:
                 doc = etree.parse(path_data + '/' + list_of_folders[
                     counterXML1] + '/' + 'bindings.xml')
@@ -162,21 +184,24 @@ for x in range(length_html_list):
             dsd_tag_temp = None
 
             #Reading .dsd file data.
-            file_exists_dsd = exists(path_data + '/' + list_of_folders[length_html_list] + '/' + 'DS_datasource1.dsd')
+            file_exists_dsd = exists(path_data + '/' + list_of_folders[x] + '/' + 'DS_datasource1.dsd')
             if file_exists_dsd is True:
                 if xml_object_id is not None:
-                    doc = etree.parse(path_data + '/' + list_of_folders[length_html_list]
+                    doc = etree.parse(path_data + '/' + list_of_folders[x]
                                       + '/' + 'DS_datasource1.dsd')
                     root = doc.getroot()
 
                     #Filtering dsd file data.
                     for elem in root.findall("./dataobject"):
+                        if dsd_object_id_to_dict is not None:
+                            break
+
                         if len(list(elem)) > 0:
                             for z in range(len(list(elem))):
                                 if list(elem)[z].attrib["name"] == "PointRefPointName":
                                     dsd_object_id_temp = elem.attrib["id"]
                                     dsd_tag_temp = list(elem)[z].text
-                                    dsd_file_temp = list_of_folders[length_html_list]
+                                    dsd_file_temp = list_of_folders[x]
                                     if dsd_object_id_temp is not None:
 
                                         if dsd_object_id_temp == xml_object_id:
@@ -184,6 +209,9 @@ for x in range(length_html_list):
                                             dsd_tag_to_dict = list(elem)[z].text
                                             z = range(len(list(elem)))
                                             break
+                                        else:
+                                            dsd_object_id_to_dict = None
+                                            dsd_tag_to_dict = None
             else:
                 dsd_object_id_temp = None
                 dsd_tag_temp = None
@@ -210,6 +238,61 @@ for x in range(length_html_list):
                 "Faceplate": result_faceplate_final
             }
 
+            if object_id_counter is None:
+                counterObjectID = counterObjectID + 1
+
+            if html_name_list[x] is None:
+                counterDisplayName = counterDisplayName + 1
+
+            if result_id[0] is None:
+                counterObjectName = counterObjectName + 1
+
+            if tag_id is None:
+                counterTagID = counterTagID + 1
+
+            if result_tag is None:
+                counterTag = counterTag + 1
+
+            if result_hdx_id is None:
+                counterHDXBINDINGID = counterHDXBINDINGID + 1
+                #Delete de regel hier onder zodra het debuggen klaar is
+                counterHDXBINDINGID_Per_File = counterHDXBINDINGID_Per_File + 1
+
+            if xml_object_id is None:
+                counterXML_Object_ID = counterXML_Object_ID + 1
+                #Delete de regel hier onder zodra het debuggen klaar is
+                counterXML_Object_ID_Per_File = counterXML_Object_ID_Per_File + 1
+
+            if dsd_object_id_to_dict is None:
+                counterDSD_Object_ID = counterDSD_Object_ID + 1
+                # Delete de regel hier onder zodra het debuggen klaar is
+                counterDSD_Object_ID_Per_File = counterDSD_Object_ID_Per_File + 1
+
+            if dsd_tag_to_dict is None:
+                counterDSD_Tag = counterDSD_Tag + 1
+
+            if result_top is None:
+                counterLocatie_Top = counterLocatie_Top + 1
+
+            if result_left is None:
+                counterLocatie_Left = counterLocatie_Left + 1
+
+            if result_width is None:
+                counterWidth = counterWidth + 1
+
+            if result_height is None:
+                counterHeight = counterHeight + 1
+
+            if result_faceplate_final is None:
+                counterFaceplate = counterFaceplate + 1
+
+            with open(fileNameString, "a") as external_file:
+                print("File naam: " + list_of_folders[x], file=external_file)
+                print("counterHDXBINDINGID " + str(counterHDXBINDINGID_Per_File), file=external_file)
+                print("counterXML_Object_ID " + str(counterXML_Object_ID_Per_File), file=external_file)
+                print("counterDSD_Object_ID " + str(counterDSD_Object_ID_Per_File), file=external_file)
+
+
             #Error catcher. If no data is found, set file verification to True indicating something went wrong.
             if bigdict is not None:
                 file_verification = True
@@ -234,6 +317,22 @@ with open("HTML_XML_Datasource_Sanatized.txt", 'w') as f:
     for x3 in range(len(sanatized_data_dict)):
         f.write(json.dumps(sanatized_data_dict[x3]))
 
+with open(fileNameString, "a") as external_file:
+    print("counterObjectID " + str(counterObjectID), file=external_file)
+    print("counterDisplayName " + str(counterDisplayName), file=external_file)
+    print("counterObjectName " + str(counterObjectName), file=external_file)
+    print("counterTagID " + str(counterTagID), file=external_file)
+    print("counterTag " + str(counterTag), file=external_file)
+    print("counterHDXBINDINGID " + str(counterHDXBINDINGID), file=external_file)
+    print("counterXML_Object_ID " + str(counterXML_Object_ID), file=external_file)
+    print("counterDSD_Object_ID " + str(counterDSD_Object_ID), file=external_file)
+    print("counterDSD_Tag " + str(counterDSD_Tag), file=external_file)
+    print("counterLocatie_Top " + str(counterLocatie_Top), file=external_file)
+    print("counterLocatie_Left " + str(counterLocatie_Left), file=external_file)
+    print("counterWidth " + str(counterWidth), file=external_file)
+    print("counterHeight " + str(counterHeight), file=external_file)
+    print("counterFaceplate " + str(counterFaceplate), file=external_file)
+    print("\nEntries processed: " + str(len(sanatized_data_dict)), file=external_file)
 
 #Programm end with error catch.
 if(len(sanatized_data_dict) < 1):

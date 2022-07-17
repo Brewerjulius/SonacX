@@ -53,6 +53,7 @@ counterHeight = 0
 counterFaceplate = 0
 
 
+
 # datetime object containing current date and time
 now = datetime.now()
 
@@ -61,6 +62,9 @@ dt_string = now.strftime("%d-%m-%Y %H.%M.%S")
 print("date and time =", dt_string)
 
 fileNameString = 'Log' + dt_string + '.txt'
+
+Match_check_naam = "Match_check_naam" + dt_string + ".txt"
+Match_check_naam_2 = "Match_check_naam_2" + dt_string + ".txt"
 
 # Loop trough dirs and collect HTML filenames for list
 print("Creating file list: ")
@@ -90,6 +94,7 @@ for x in range(length_html_list):
     counterHDXBINDINGID_Per_File = 0
     counterXML_Object_ID_Per_File = 0
     counterDSD_Object_ID_Per_File = 0
+    entryCounter = 0
 
     file_verification = False
 
@@ -174,7 +179,20 @@ for x in range(length_html_list):
                         if result_hdx_id is not None:
                             if attributes["ID"] is result_hdx_id[0]:
                                 xml_object_id = attributes["objectid"]
+                                if result_hdx_id is not None:
+                                    result_hdx_id[0] = "Leeg"
+
+                                with open(Match_check_naam_2, "a") as external_file:
+                                    print(result_hdx_id[0])
                         else:
+
+                            if result_hdx_id is not None:
+                                result_hdx_id[0] = "Leeg"
+
+                                with open(Match_check_naam_2, "a") as external_file:
+                                    print(result_hdx_id[0])
+
+
                             xml_object_id = None
 
             #Emptying DSD variables
@@ -205,11 +223,17 @@ for x in range(length_html_list):
                                     if dsd_object_id_temp is not None:
 
                                         if dsd_object_id_temp == xml_object_id:
+                                            with open(Match_check_naam, "a") as external_file:
+                                                print(dsd_object_id_temp + ", " + xml_object_id + ", " + "True",
+                                                      file=external_file)
                                             dsd_object_id_to_dict = elem.attrib["id"]
                                             dsd_tag_to_dict = list(elem)[z].text
                                             z = range(len(list(elem)))
                                             break
                                         else:
+                                            with open(Match_check_naam, "a") as external_file:
+                                                print(dsd_object_id_temp + ", " + xml_object_id + ", " + "False",
+                                                      file=external_file)
                                             dsd_object_id_to_dict = None
                                             dsd_tag_to_dict = None
             else:
@@ -237,6 +261,8 @@ for x in range(length_html_list):
                 "Height": result_height,
                 "Faceplate": result_faceplate_final
             }
+
+            entryCounter = entryCounter + 1
 
             if object_id_counter is None:
                 counterObjectID = counterObjectID + 1
@@ -286,18 +312,18 @@ for x in range(length_html_list):
             if result_faceplate_final is None:
                 counterFaceplate = counterFaceplate + 1
 
-            with open(fileNameString, "a") as external_file:
-                print("File naam: " + list_of_folders[x], file=external_file)
-                print("counterHDXBINDINGID " + str(counterHDXBINDINGID_Per_File), file=external_file)
-                print("counterXML_Object_ID " + str(counterXML_Object_ID_Per_File), file=external_file)
-                print("counterDSD_Object_ID " + str(counterDSD_Object_ID_Per_File), file=external_file)
-
-
             #Error catcher. If no data is found, set file verification to True indicating something went wrong.
             if bigdict is not None:
                 file_verification = True
 
             sanatized_data_dict.append(bigdict)
+
+    with open(fileNameString, "a") as external_file:
+        print("\nFile naam: " + list_of_folders[x], file=external_file)
+        print("counterHDXBINDINGID " + str(counterHDXBINDINGID_Per_File), file=external_file)
+        print("counterXML_Object_ID " + str(counterXML_Object_ID_Per_File), file=external_file)
+        print("counterDSD_Object_ID " + str(counterDSD_Object_ID_Per_File), file=external_file)
+        print("entryCounter " + str(entryCounter), file=external_file)
 
     #Verify if a file had any data in it. IF its empty print message.
     if file_verification is False:
